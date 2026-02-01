@@ -26,6 +26,8 @@ This system answers questions **strictly and only** from provided aviation docum
 ### Level 2 (Advanced - Implemented)
 - 🔍 **Hybrid Retrieval** - Combines vector similarity (FAISS) with BM25 keyword search
 - 🎯 **Cross-Encoder Reranking** - Improves retrieval precision using `ms-marco-MiniLM`
+- 🧠 **Query Router** - Routes questions based on complexity (simple/moderate/complex)
+- 📊 **Confidence Thresholding** - Evaluates answer confidence and triggers clarification when needed
 - ⚡ **GPU Acceleration** - FAISS and embeddings leverage CUDA when available
 
 ## 🛠️ Tech Stack
@@ -60,13 +62,49 @@ This system answers questions **strictly and only** from provided aviation docum
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                       RAG Engine                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │                  Query Router                            │    │
+│  │  Classify → Simple/Moderate/Complex → Route              │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              │                                   │
+│                              ▼                                   │
 │  Query → Embed → Hybrid Search → Rerank → LLM → Verify          │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
 │  │ Embeddings  │  │ Vector Store│  │      Reranker           │  │
 │  │ (MiniLM)    │  │ (FAISS+BM25)│  │  (Cross-Encoder)        │  │
 │  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
+│                              │                                   │
+│                              ▼                                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │            Confidence Thresholding                       │    │
+│  │  HIGH → Answer | MEDIUM → Caveat | LOW → Refuse/Clarify  │    │
+│  └─────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+## 🧠 Query Router & Confidence Thresholding
+
+The system implements intelligent query routing based on question complexity:
+
+### Query Complexity Levels
+
+| Level | Description | Retrieval Strategy |
+|-------|-------------|-------------------|
+| **Simple** | Definitions, direct lookups ("What is VOR?") | Lower top_k (5), skip reranker |
+| **Moderate** | Applied/procedural questions | Standard retrieval with reranker |
+| **Complex** | Multi-step reasoning, comparisons, trade-offs | Higher top_k (15), always rerank |
+
+### Confidence Thresholding
+
+After answer generation, the system evaluates confidence from multiple sources:
+- **Model confidence** (40%) - LLM's reported certainty
+- **Retrieval scores** (40%) - Similarity scores from vector search
+- **Grounding factor** (20%) - Whether answer passed verification
+
+Based on composite confidence:
+- **HIGH (≥0.8)**: Return answer directly
+- **MEDIUM (0.5-0.8)**: Return answer with confidence caveat
+- **LOW (<0.5)**: Refuse or ask clarification question
 
 ## 🚀 Quick Start
 
