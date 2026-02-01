@@ -1,167 +1,193 @@
 """
-Pydantic models for API request/response schemas.
+Aviation RAG Chat - Data Models
+Pydantic models for documents, chunks, and API responses
 """
-from typing import List, Optional
+
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from datetime import datetime
+from enum import Enum
 
 
-# ============== Ingestion Models ==============
+# =============================================================================
+# Document Models
+# =============================================================================
 
-class IngestRequest(BaseModel):
-    """Request model for document ingestion."""
-    file_paths: Optional[List[str]] = Field(
-        default=None,
-        description="List of file paths to ingest. If empty, ingests all PDFs from data directory."
-    )
-    force_reindex: bool = Field(
-        default=False,
-        description="Force re-indexing even if index exists."
-    )
+class DocumentMetadata(BaseModel):
+    """Metadata for a processed document."""
+    filename: str
+    filepath: str
+    file_size: int
+    total_pages: int
+    created_at: datetime = Field(default_factory=datetime.now)
+    processed_at: Optional[datetime] = None
+    document_type: str = "pdf"
+    category: Optional[str] = None  # e.g., "Air Navigation", "Meteorology"
 
 
-class ChunkMetadata(BaseModel):
-    """Metadata for a document chunk."""
+class TextChunk(BaseModel):
+    """A chunk of text extracted from a document."""
     chunk_id: str
-    document_name: str
-    page_number: Optional[int] = None
-    chunk_index: int
-    total_chunks: int
-    start_char: int
-    end_char: int
+    document_id: str
+    content: str
+    page_number: int
+    chunk_index: int  # Index within the document
+    start_char: Optional[int] = None
+    end_char: Optional[int] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "chunk_id": "doc1_chunk_0",
+                "document_id": "doc1",
+                "content": "The altimeter is an instrument...",
+                "page_number": 15,
+                "chunk_index": 0,
+                "metadata": {"section": "Instruments"}
+            }
+        }
 
 
-class IngestResponse(BaseModel):
-    """Response model for document ingestion."""
-    success: bool
-    message: str
-    documents_processed: int
+class ProcessedDocument(BaseModel):
+    """A fully processed document with all its chunks."""
+    document_id: str
+    metadata: DocumentMetadata
+    chunks: List[TextChunk]
     total_chunks: int
     processing_time_seconds: float
 
 
-# ============== Chat/Ask Models ==============
-
-class Citation(BaseModel):
-    """Citation information for a response."""
-    document_name: str
-    page_number: Optional[int] = None
-    chunk_id: str
-    relevance_score: float
-    snippet: str = Field(
-        ...,
-        description="Short text snippet from the cited chunk."
-    )
-
+# =============================================================================
+# Retrieval Models
+# =============================================================================
 
 class RetrievedChunk(BaseModel):
-    """A retrieved chunk with metadata."""
+    """A chunk retrieved from the vector store."""
     chunk_id: str
+    document_id: str
     content: str
+    page_number: int
+    score: float  # Similarity score
+    rerank_score: Optional[float] = None  # Score after reranking
+    source_file: str
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
+class Citation(BaseModel):
+    """Citation for an answer."""
     document_name: str
-    page_number: Optional[int] = None
-    vector_score: Optional[float] = None
-    bm25_score: Optional[float] = None
-    rerank_score: Optional[float] = None
+    page_number: int
+    chunk_id: str
+    relevant_text: str  # Short snippet of relevant text
+    confidence: float
+
+
+# =============================================================================
+# API Request/Response Models
+# =============================================================================
+
+class IngestRequest(BaseModel):
+    """Request to ingest documents."""
+    document_paths: Optional[List[str]] = None  # If None, ingest all from Raw/
+    force_reindex: bool = False
+
+
+class IngestResponse(BaseModel):
+    """Response from document ingestion."""
+    status: str
+    documents_processed: int
+    total_chunks: int
+    processing_time_seconds: float
+    errors: List[str] = Field(default_factory=list)
 
 
 class AskRequest(BaseModel):
-    """Request model for asking a question."""
-    question: str = Field(
-        ...,
-        min_length=1,
-        max_length=2000,
-        description="The question to ask about the aviation documents."
-    )
-    debug: bool = Field(
-        default=False,
-        description="If true, returns detailed retrieval information."
-    )
-    top_k: int = Field(
-        default=5,
-        ge=1,
-        le=20,
-        description="Number of top chunks to use for answer generation."
-    )
+    """Request to ask a question."""
+    question: str
+    debug: bool = False  # If True, include retrieved chunks in response
+    top_k: int = 5  # Number of chunks to retrieve
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "question": "What is the purpose of an altimeter?",
+                "debug": True,
+                "top_k": 5
+            }
+        }
 
 
 class AskResponse(BaseModel):
-    """Response model for a question."""
+    """Response to a question."""
     answer: str
     citations: List[Citation]
-    is_grounded: bool = Field(
-        default=True,
-        description="Whether the answer is fully grounded in retrieved context."
-    )
-    confidence_score: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the answer."
-    )
-class DebugData(BaseModel):
-    """Debug information for detailed traceability."""
-    retrieved_chunks: List[RetrievedChunk]
-    router_decision: str
-    retrieval_method: str
-    processing_time_ms: float
+    confidence: float
+    is_grounded: bool  # Whether the answer is fully grounded in sources
+    retrieved_chunks: Optional[List[RetrievedChunk]] = None  # Only if debug=True
+    processing_time_seconds: float
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "answer": "An altimeter is used to measure altitude...",
+                "citations": [
+                    {
+                        "document_name": "Instruments.pdf",
+                        "page_number": 15,
+                        "chunk_id": "instruments_chunk_42",
+                        "relevant_text": "The altimeter measures...",
+                        "confidence": 0.92
+                    }
+                ],
+                "confidence": 0.92,
+                "is_grounded": True,
+                "processing_time_seconds": 1.23
+            }
+        }
 
-
-class AskResponse(BaseModel):
-    """Response model for a question."""
-    answer: str
-    citations: List[Citation]
-    is_grounded: bool = Field(
-        default=True,
-        description="Whether the answer is fully grounded in retrieved context."
-    )
-    confidence_score: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the answer."
-    )
-    # Nested debug data (Phase 4 requirement)
-    debug_data: Optional[DebugData] = Field(
-        default=None,
-        description="Detailed debug information (only if debug=True)."
-    )
-
-
-# ============== Health Check Models ==============
 
 class HealthResponse(BaseModel):
-    """Response model for health check."""
-    status: str = "healthy"
-    version: str = "1.0.0"
-    index_loaded: bool = False
-    documents_indexed: int = 0
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    """Health check response."""
+    status: str
+    version: str
+    timestamp: datetime
+    components: Dict[str, str]
 
 
-# ============== Evaluation Models ==============
+# =============================================================================
+# Evaluation Models
+# =============================================================================
+
+class QuestionType(str, Enum):
+    """Types of evaluation questions."""
+    FACTUAL = "factual"
+    APPLIED = "applied"
+    REASONING = "reasoning"
+
 
 class EvaluationQuestion(BaseModel):
     """A question for evaluation."""
-    id: int
+    question_id: str
     question: str
-    category: str = Field(
-        ...,
-        description="One of: 'factual', 'applied', 'reasoning'"
-    )
+    question_type: QuestionType
     expected_answer: Optional[str] = None
-    expected_grounded: bool = True
+    source_page: Optional[int] = None
+    source_document: Optional[str] = None
 
 
 class EvaluationResult(BaseModel):
     """Result of evaluating a single question."""
-    question_id: int
+    question_id: str
     question: str
-    category: str
+    question_type: QuestionType
     generated_answer: str
+    expected_answer: Optional[str]
     is_grounded: bool
-    retrieval_hit: bool
-    faithfulness_score: float
+    retrieval_hit: bool  # Did retrieved chunks contain the answer?
+    is_faithful: bool  # Is answer faithful to sources?
+    is_hallucination: bool
+    confidence: float
     citations: List[Citation]
     notes: Optional[str] = None
 
@@ -169,11 +195,12 @@ class EvaluationResult(BaseModel):
 class EvaluationReport(BaseModel):
     """Complete evaluation report."""
     total_questions: int
+    by_type: Dict[str, int]
     retrieval_hit_rate: float
-    faithfulness_score: float
+    faithfulness_rate: float
     hallucination_rate: float
-    grounding_rate: float
-    category_breakdown: dict
+    average_confidence: float
+    results: List[EvaluationResult]
     best_answers: List[EvaluationResult]
     worst_answers: List[EvaluationResult]
-    generated_at: datetime = Field(default_factory=datetime.utcnow)
+    generated_at: datetime = Field(default_factory=datetime.now)

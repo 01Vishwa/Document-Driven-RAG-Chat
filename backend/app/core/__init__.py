@@ -1,5 +1,7 @@
-"""Core module exports."""
-from app.core.config import Settings, get_settings
-from app.core.logging import logger
+"""Core module initialization."""
 
-__all__ = ["Settings", "get_settings", "logger"]
+from app.core.config import settings, get_settings
+from app.core.logging import setup_logging
+from loguru import logger
+
+__all__ = ["settings", "get_settings", "setup_logging", "logger"]

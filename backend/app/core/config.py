@@ -1,80 +1,141 @@
 """
-Core configuration module for the Aviation RAG Chat backend.
-Loads environment variables and provides settings across the application.
+Aviation RAG Chat - Configuration Management
+Centralized configuration using Pydantic Settings
 """
+
 import os
 from pathlib import Path
+from typing import Optional
 from pydantic_settings import BaseSettings
+from pydantic import Field
 from functools import lru_cache
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
-    # GitHub Models API
-    github_token: str = ""
-    llm_endpoint: str = "https://models.github.ai/inference"
-    llm_model: str = "openai/gpt-4o"
+    # ==========================================================================
+    # LLM Configuration
+    # ==========================================================================
+    github_token: str = Field(default="", env="GITHUB_TOKEN")
+    llm_endpoint: str = Field(
+        default="https://models.github.ai/inference",
+        env="LLM_ENDPOINT"
+    )
+    llm_model: str = Field(default="openai/gpt-4o", env="LLM_MODEL")
     
-    # Embedding Model
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # ==========================================================================
+    # Embedding Configuration
+    # ==========================================================================
+    embedding_model: str = Field(
+        default="sentence-transformers/all-MiniLM-L6-v2",
+        env="EMBEDDING_MODEL"
+    )
+    embedding_dimension: int = Field(default=384, env="EMBEDDING_DIMENSION")
     
-    # Reranker Model
-    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    # ==========================================================================
+    # FAISS Configuration
+    # ==========================================================================
+    faiss_index_path: str = Field(default="./data/faiss_index", env="FAISS_INDEX_PATH")
+    use_gpu: bool = Field(default=True, env="USE_GPU")
     
-    # Data paths (from environment)
-    data_dir: str = "./data"
-    raw_documents_path: str = "../Raw"  # Path to PDF documents
+    # ==========================================================================
+    # Chunking Configuration
+    # ==========================================================================
+    chunk_size: int = Field(default=512, env="CHUNK_SIZE")
+    chunk_overlap: int = Field(default=128, env="CHUNK_OVERLAP")
     
-    # Supabase / PGVector Settings
-    supabase_connection_string: str = ""  # postgresql://postgres:password@host:port/postgres
-    supabase_collection_name: str = "aviation_docs"
+    # ==========================================================================
+    # Retrieval Configuration
+    # ==========================================================================
+    top_k_retrieval: int = Field(default=10, env="TOP_K_RETRIEVAL")
+    top_k_rerank: int = Field(default=5, env="TOP_K_RERANK")
+    similarity_threshold: float = Field(default=0.3, env="SIMILARITY_THRESHOLD")
     
-    # Deprecated (keeping for reference or cleanup)
-    faiss_index_path: str = "./data/faiss_index"
-    bm25_index_path: str = "./data/bm25_index.pkl"
+    # ==========================================================================
+    # Reranker Configuration
+    # ==========================================================================
+    reranker_model: str = Field(
+        default="cross-encoder/ms-marco-MiniLM-L-6-v2",
+        env="RERANKER_MODEL"
+    )
+    use_reranker: bool = Field(default=True, env="USE_RERANKER")
     
-    # RAG Settings
-    # chunk_size=1000: Balances context completeness vs retrieval precision
-    # chunk_overlap=200: Ensures sentence boundaries are preserved
-    chunk_size: int = 1000
-    chunk_overlap: int = 200
-    top_k_retrieval: int = 10
-    top_k_rerank: int = 5
+    # ==========================================================================
+    # BM25 Configuration
+    # ==========================================================================
+    use_bm25: bool = Field(default=True, env="USE_BM25")
+    bm25_weight: float = Field(default=0.3, env="BM25_WEIGHT")
+    vector_weight: float = Field(default=0.7, env="VECTOR_WEIGHT")
     
-    # API Settings
-    api_host: str = "0.0.0.0"
-    api_port: int = 8000
-    debug: bool = True
+    # ==========================================================================
+    # Grounding Configuration
+    # ==========================================================================
+    confidence_threshold: float = Field(default=0.5, env="CONFIDENCE_THRESHOLD")
+    grounding_check: bool = Field(default=True, env="GROUNDING_CHECK")
     
-    # Grounding - CRITICAL for anti-hallucination
-    refusal_message: str = "This information is not available in the provided document(s)."
-    confidence_threshold: float = -5.0  # Rerank scores typically range -10 to 10
+    # ==========================================================================
+    # API Configuration
+    # ==========================================================================
+    api_host: str = Field(default="0.0.0.0", env="API_HOST")
+    api_port: int = Field(default=8000, env="API_PORT")
+    debug_mode: bool = Field(default=False, env="DEBUG_MODE")
+    
+    # ==========================================================================
+    # Document Paths
+    # ==========================================================================
+    raw_documents_path: str = Field(default="../Raw", env="RAW_DOCUMENTS_PATH")
+    processed_data_path: str = Field(default="./data/processed", env="PROCESSED_DATA_PATH")
     
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
-        extra = "ignore"
+        case_sensitive = False
     
     @property
-    def data_path(self) -> Path:
-        """Return the data directory as a Path object."""
-        path = Path(self.data_dir)
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+    def base_dir(self) -> Path:
+        """Get the base directory of the backend."""
+        return Path(__file__).parent.parent
     
     @property
-    def faiss_path(self) -> Path:
-        """Return the FAISS index path."""
-        return Path(self.faiss_index_path)
+    def data_dir(self) -> Path:
+        """Get the data directory."""
+        data_path = self.base_dir / "data"
+        data_path.mkdir(parents=True, exist_ok=True)
+        return data_path
     
     @property
-    def bm25_path(self) -> Path:
-        """Return the BM25 index path."""
-        return Path(self.bm25_index_path)
+    def faiss_dir(self) -> Path:
+        """Get the FAISS index directory."""
+        faiss_path = Path(self.faiss_index_path)
+        if not faiss_path.is_absolute():
+            faiss_path = self.base_dir / faiss_path
+        faiss_path.mkdir(parents=True, exist_ok=True)
+        return faiss_path
+    
+    @property
+    def raw_docs_dir(self) -> Path:
+        """Get the raw documents directory."""
+        raw_path = Path(self.raw_documents_path)
+        if not raw_path.is_absolute():
+            raw_path = self.base_dir / raw_path
+        return raw_path
+    
+    @property
+    def processed_dir(self) -> Path:
+        """Get the processed data directory."""
+        processed_path = Path(self.processed_data_path)
+        if not processed_path.is_absolute():
+            processed_path = self.base_dir / processed_path
+        processed_path.mkdir(parents=True, exist_ok=True)
+        return processed_path
 
 
 @lru_cache()
 def get_settings() -> Settings:
     """Get cached settings instance."""
     return Settings()
+
+
+# Convenience function for accessing settings
+settings = get_settings()

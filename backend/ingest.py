@@ -1,56 +1,101 @@
+#!/usr/bin/env python
 """
-Ingestion Script - Command Line Tool.
-Ingests aviation PDFs from the Raw directory into the vector and BM25 indices.
+Aviation RAG Chat - Document Ingestion Script
+Ingest PDF documents into the vector store
 """
+
 import sys
+import argparse
 from pathlib import Path
 
-# Add parent to path
+# Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from dotenv import load_dotenv
-load_dotenv()
-
-from app.core import logger
-from app.services import get_ingestion_service
+from loguru import logger
+from app.services.rag_engine import rag_engine
+from app.core.config import settings
 
 
 def main():
-    """Run ingestion on all PDFs."""
-    print("="*60)
-    print("Aviation RAG Chat - Document Ingestion")
-    print("="*60)
+    parser = argparse.ArgumentParser(
+        description="Ingest aviation PDF documents into the vector store"
+    )
+    parser.add_argument(
+        "--path",
+        type=str,
+        default=None,
+        help="Path to PDF file or directory (default: Raw/ directory)"
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force re-indexing (clear existing index)"
+    )
+    parser.add_argument(
+        "--stats",
+        action="store_true",
+        help="Show statistics and exit"
+    )
     
-    ingestion_service = get_ingestion_service()
+    args = parser.parse_args()
     
-    # Check for Raw directory
-    raw_dir = Path("Raw")
-    if not raw_dir.exists():
-        raw_dir = Path("../Raw")
+    # Show stats only
+    if args.stats:
+        stats = rag_engine.get_stats()
+        print("\n" + "=" * 50)
+        print("VECTOR STORE STATISTICS")
+        print("=" * 50)
+        for key, value in stats.get("vector_store", {}).items():
+            print(f"{key}: {value}")
+        print("=" * 50)
+        return
     
-    if raw_dir.exists():
-        pdfs = list(raw_dir.rglob("*.pdf"))
-        print(f"\nFound {len(pdfs)} PDF files in {raw_dir.absolute()}:")
-        for pdf in pdfs:
-            print(f"  - {pdf.name} ({pdf.stat().st_size / 1024 / 1024:.1f} MB)")
+    # Determine paths
+    document_paths = None
+    if args.path:
+        path = Path(args.path)
+        if path.is_file() and path.suffix.lower() == '.pdf':
+            document_paths = [str(path)]
+        elif path.is_dir():
+            document_paths = [str(p) for p in path.rglob("*.pdf")]
+        else:
+            logger.error(f"Invalid path: {args.path}")
+            sys.exit(1)
+    
+    # Log source
+    if document_paths:
+        logger.info(f"Ingesting from: {args.path}")
+        logger.info(f"Found {len(document_paths)} PDF files")
     else:
-        print("\nNo Raw directory found. Place PDFs in ./Raw/")
+        logger.info(f"Ingesting from default: {settings.raw_docs_dir}")
     
-    print("\nStarting ingestion...")
-    result = ingestion_service.ingest_documents(force_reindex=True)
+    # Run ingestion
+    logger.info("Starting document ingestion...")
     
-    print("\n" + "="*60)
-    print("INGESTION COMPLETE")
-    print("="*60)
-    print(f"Success:            {result['success']}")
-    print(f"Documents Processed: {result['documents_processed']}")
-    print(f"Total Chunks:       {result['total_chunks']}")
-    print(f"Processing Time:    {result['processing_time_seconds']:.2f}s")
-    print("="*60)
+    response = rag_engine.ingest_documents(
+        document_paths=document_paths,
+        force_reindex=args.force,
+    )
     
-    if result['success']:
-        print("\nIndices saved to ./data/")
-        print("You can now run the API with: python main.py")
+    # Print results
+    print("\n" + "=" * 50)
+    print("INGESTION RESULTS")
+    print("=" * 50)
+    print(f"Status:              {response.status}")
+    print(f"Documents Processed: {response.documents_processed}")
+    print(f"Total Chunks:        {response.total_chunks}")
+    print(f"Processing Time:     {response.processing_time_seconds:.2f}s")
+    
+    if response.errors:
+        print(f"\nErrors ({len(response.errors)}):")
+        for error in response.errors:
+            print(f"  - {error}")
+    
+    print("=" * 50)
+    
+    # Show final stats
+    stats = rag_engine.get_stats()
+    print(f"\nVector Store: {stats['vector_store']['total_vectors']} vectors indexed")
 
 
 if __name__ == "__main__":

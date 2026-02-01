@@ -1,38 +1,51 @@
 # Core dependencies
-fastapi>=0.109.0
-uvicorn[standard]>=0.27.0
-python-multipart>=0.0.9
-python-dotenv>=1.0.0
-pydantic>=2.6.0
-pydantic-settings>=2.1.0
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+python-multipart==0.0.9
+pydantic==2.6.1
+pydantic-settings==2.1.0
 
 # PDF Processing
-pypdf>=4.0.0
-pdfplumber>=0.10.0
+pypdf==4.0.1
+pdfplumber==0.10.4
+pymupdf==1.23.26
 
-# Embeddings & Vector Store
-sentence-transformers>=2.3.0
-vecs>=0.4.0
-psycopg2-binary>=2.9.0
-numpy>=1.26.0
+# Embeddings & ML
+sentence-transformers==2.3.1
+torch>=2.1.0
+transformers==4.37.2
 
-# BM25 for Sparse Retrieval
-rank-bm25>=0.2.2
+# Vector Store - FAISS with GPU support
+faiss-cpu==1.7.4
+# For GPU: pip install faiss-gpu (requires CUDA)
 
-# Reranking
-torch>=2.0.0
-transformers>=4.37.0
+# BM25 for hybrid retrieval
+rank-bm25==0.2.2
 
-# LangChain & Logic
-langchain>=0.1.0
-langchain-community>=0.0.10
-langchain-huggingface>=0.0.8
-langchain-openai>=0.0.5
+# Cross-encoder for reranking
+# Already included in sentence-transformers
 
-# OpenAI (if needed for embeddings in future, though we use local)
-openai>=1.10.0
+# LLM Client
+openai==1.12.0
+httpx==0.26.0
+
+# Async support
+aiofiles==23.2.1
+aiohttp==3.9.3
 
 # Utilities
-tqdm>=4.66.0
-loguru>=0.7.0
-requests>=2.31.0
+python-dotenv==1.0.1
+tqdm==4.66.2
+numpy==1.26.4
+pandas==2.2.0
+
+# Logging and monitoring
+loguru==0.7.2
+rich==13.7.0
+
+# Testing
+pytest==8.0.0
+pytest-asyncio==0.23.4
+
+# Streamlit UI
+streamlit==1.31.0
