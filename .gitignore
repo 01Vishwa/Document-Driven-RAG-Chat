@@ -1,0 +1,43 @@
+# General
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+env/
+.venv/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+# Keep .env.example
+!.env.example
+
+# Node/Frontend
+node_modules/
+dist/
+build/
+.next/
+coverage/
+.vercel/
+
+# Project Specific Data & Logs
+backend/logs/
+backend/data/
+Raw/
+input_docs/
+*.pkl
+
+# Evaluation outputs (optional, usually ignored if large)
+backend/evaluation_results.json

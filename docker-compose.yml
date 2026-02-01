@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # RAG API Service
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - DEBUG=true
+      # Pass through essential host/secrets
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
+      - SUPABASE_COLLECTION_NAME=${SUPABASE_COLLECTION_NAME}
+    volumes:
+      - ./backend/data:/app/data
+      - ./backend/logs:/app/logs
+      - ./Raw:/app/Raw
+    restart: always
+
+  # Local Postgres for testing (Optional, if not using Supabase cloud)
+  # Uses pgvector image
+  db:
+    image: ankane/pgvector
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=rag_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  pgdata:
