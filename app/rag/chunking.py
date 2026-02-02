@@ -150,7 +150,7 @@ class TextChunker:
         """
         chunks = []
         current_chunk = ""
-        current_page = 1
+        current_page = pages[0].page_number if pages else 1
         chunk_index = 0
         
         for page in pages:

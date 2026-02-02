@@ -6,6 +6,8 @@ A production-grade Retrieval-Augmented Generation (RAG) system for aviation docu
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+![Aviation AI Chat Screenshot](assets/screenshot.png)
+
 ## 🎯 Overview
 
 This system answers questions **strictly** from provided aviation documents.
@@ -30,18 +32,17 @@ This system answers questions **strictly** from provided aviation documents.
 ## 🛠️ Architecture
 
 ```mermaid
-graph LR
-    User[User Question] --> Router{Query Router}
-    Router -->|Simple| Fast[Fast Retrieval (Top-5)]
-    Router -->|Complex| Deep[Deep Retrieval (Top-15 + Rerank)]
-    Fast --> Hybrid[Hybrid Search (FAISS + BM25)]
-    Deep --> Hybrid
-    Hybrid --> Reranker[Cross-Encoder Reranker]
-    Reranker --> Context[Context Window]
-    Context --> LLM[GPT-4o (GitHub Models)]
-    LLM --> Verify{Grounding Check}
-    Verify -->|Pass| Answer[Final Answer + Citations]
-    Verify -->|Fail| Refuse[Refusal Message]
+graph TD
+    User[User Question] -->|Classify| Router(Query Router)
+    Router -->|Set Params| Retrieval[Hybrid Retrieval<br/>(Vector + BM25)]
+    Retrieval -->|Top Candidates| CheckRerank{Reranking?}
+    CheckRerank -->|Yes| Reranker[Cross-Encoder]
+    Reranker --> Context[Context Assembly]
+    CheckRerank -->|No| Context
+    Context -->|Prompt + Context| LLM[LLM Generation<br/>(GitHub Models)]
+    LLM -->|Verify| Grounding{Grounding Check}
+    Grounding -->|Pass| Answer[Final Answer]
+    Grounding -->|Fail| Refusal[Strict Refusal]
 ```
 
 ## 🚀 Quick Start
@@ -89,6 +90,13 @@ python evaluate.py
 - **Retrieval Hit Rate**: Accuracy of finding relevant chunks.
 - **Faithfulness**: Alignment between answer and context.
 - **Hallucination Rate**: Frequency of unsupported claims (Target: 0%).
+
+### 📈 Level 2 Comparisons (Bonus)
+To prove the efficacy of Hybrid Retrieval (Option 1) vs Vector-Only baseline:
+```bash
+python scripts/benchmark.py
+```
+This runs a comparative analysis and saves a report to `data/benchmark/benchmark_report.md`.
 
 ## 🔧 API Reference
 

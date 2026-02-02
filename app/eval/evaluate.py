@@ -237,8 +237,8 @@ class Evaluator:
         if "not available in the provided document" in answer.lower():
             return False
         
-        # Check grounding and confidence
-        if not is_grounded and confidence < 0.5:
+        # Check grounding
+        if not is_grounded:
             return True
         
         # Check for speculative language

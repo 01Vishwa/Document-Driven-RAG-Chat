@@ -149,6 +149,12 @@ with st.sidebar:
     
     st.markdown("---")
     
+    # Settings
+    st.subheader("⚙️ Settings")
+    debug_mode = st.toggle("Debug Mode", value=False, help="Show retrieved chunks and routing info")
+    
+    st.markdown("---")
+    
     # System Info
     stats = get_stats()
     if stats:
@@ -205,7 +211,7 @@ if page == "Chat":
             with st.chat_message("assistant"):
                 with st.spinner("Searching aviation documents..."):
                     # Hardcoded settings as UI controls were removed
-                    response = ask_question(prompt, debug=False, top_k=5)
+                    response = ask_question(prompt, debug=debug_mode, top_k=5)
                 
                 if "error" in response:
                     st.error(f"Error: {response['error']}")
@@ -249,6 +255,22 @@ if page == "Chat":
                             st.info(f"📄 **{doc_name}** - Page {page_num}\n\n_{relevant_text}..._")
                     
                     # Debug info is hidden by default now as controls are removed
+                    if debug_mode:
+                        
+                        # Routing Info
+                        if routing_info:
+                            with st.expander("🔍 Debug: Routing Info", expanded=True):
+                                st.json(routing_info)
+                        
+                        # Retrieved Chunks
+                        chunks = response.get("retrieved_chunks", [])
+                        if chunks:
+                            with st.expander(f"🔍 Debug: Retrieved Chunks ({len(chunks)})", expanded=True):
+                                for i, chunk in enumerate(chunks):
+                                    st.markdown(f"**Chunk {i+1}** (Score: {chunk.get('score', 0):.4f})")
+                                    st.caption(f"Source: {chunk.get('metadata', {}).get('filename', 'Unknown')} - Page {chunk.get('metadata', {}).get('page_number', '?')}")
+                                    st.text(chunk.get('content', '')[:300] + "...")
+                                    st.divider()
                 
                 # Save to history
                 st.session_state.messages.append({
