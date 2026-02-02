@@ -6,6 +6,8 @@ Interactive chat interface for aviation document Q&A
 import streamlit as st
 import requests
 import json
+import os
+import glob
 from datetime import datetime
 
 # Configuration
@@ -22,20 +24,24 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    .stChat message {
-        padding: 1rem;
-        border-radius: 0.5rem;
-    }
     .citation-box {
-        background-color: #f0f2f6;
-        padding: 0.5rem;
-        border-radius: 0.3rem;
-        margin: 0.2rem 0;
-        font-size: 0.85rem;
+        background-color: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 8px 0;
+        font-size: 0.9rem;
+        border-left: 4px solid #4CAF50;
+        color: #333333 !important;
     }
-    .confidence-high { color: #28a745; }
-    .confidence-medium { color: #ffc107; }
-    .confidence-low { color: #dc3545; }
+    .citation-box * {
+        color: #333333 !important;
+    }
+    .citation-box small {
+        color: #666666 !important;
+    }
+    .confidence-high { color: #28a745 !important; font-weight: bold; }
+    .confidence-medium { color: #ffc107 !important; font-weight: bold; }
+    .confidence-low { color: #dc3545 !important; font-weight: bold; }
     .routing-info {
         background-color: #e8f4f8;
         padding: 0.5rem;
@@ -99,6 +105,9 @@ def ask_question(question: str, debug: bool = False, top_k: int = 5):
 # Sidebar
 with st.sidebar:
     st.title("✈️ Aviation AI Chat")
+    
+    # Navigation
+    page = st.radio("Navigation", ["Chat", "Evaluation Results"])
     st.markdown("---")
     
     # API Status
@@ -140,13 +149,6 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Settings
-    st.subheader("⚙️ Settings")
-    debug_mode = st.checkbox("Debug Mode", value=False, help="Show retrieved chunks and routing info")
-    top_k = st.slider("Retrieval Top-K", min_value=3, max_value=20, value=5)
-    
-    st.markdown("---")
-    
     # System Info
     stats = get_stats()
     if stats:
@@ -160,125 +162,138 @@ with st.sidebar:
             })
 
 
-# Main Chat Area
-st.title("✈️ Aviation Document AI Chat")
-st.caption("Ask questions about aviation documents - PPL/CPL/ATPL textbooks, SOPs, and manuals")
+if page == "Chat":
+    # Main Chat Area
+    st.title("✈️ Aviation Document AI Chat")
 
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
-# Display chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-        
-        # Show citations for assistant messages
-        if message["role"] == "assistant" and "citations" in message:
-            if message["citations"]:
-                st.markdown("**📎 Citations:**")
-                for citation in message["citations"]:
+    # Display chat history
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            
+            # Show citations for assistant messages
+            if message["role"] == "assistant" and "citations" in message:
+                if message["citations"]:
+                    st.markdown("**📎 Citations:**")
+                    for citation in message["citations"]:
+                        doc_name = citation.get("document_name", "Unknown")
+                        page_num = citation.get("page_number", "N/A")
+                        relevant_text = citation.get("relevant_text", "")[:200]
+                        st.info(f"📄 **{doc_name}** - Page {page_num}\n\n_{relevant_text}..._")
+            
+            # Show routing info in debug mode (only if present in history)
+            if message["role"] == "assistant" and "routing_info" in message and message["routing_info"]:
+                with st.expander("🔍 Debug: Routing Info"):
+                    st.json(message["routing_info"])
+
+    # Chat input
+    if prompt := st.chat_input("Ask a question about aviation..."):
+        # Check API
+        if not is_healthy:
+            st.error("API is not connected. Please start the server first.")
+        else:
+            # Add user message
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            
+            # Get response - Default settings: debug=False, top_k=5
+            with st.chat_message("assistant"):
+                with st.spinner("Searching aviation documents..."):
+                    # Hardcoded settings as UI controls were removed
+                    response = ask_question(prompt, debug=False, top_k=5)
+                
+                if "error" in response:
+                    st.error(f"Error: {response['error']}")
+                    answer = "I encountered an error processing your question."
+                    citations = []
+                    routing_info = None
+                else:
+                    answer = response.get("answer", "No answer received.")
+                    citations = response.get("citations", [])
+                    confidence = response.get("confidence", 0)
+                    is_grounded = response.get("is_grounded", False)
+                    routing_info = response.get("routing_info", None)
+                    
+                    # Display answer
+                    st.markdown(answer)
+                    
+                    # Confidence indicator
+                    if confidence >= 0.8:
+                        conf_class = "confidence-high"
+                        conf_icon = "🟢"
+                    elif confidence >= 0.5:
+                        conf_class = "confidence-medium"
+                        conf_icon = "🟡"
+                    else:
+                        conf_class = "confidence-low"
+                        conf_icon = "🔴"
+                    
                     st.markdown(
-                        f'<div class="citation-box">'
-                        f'📄 **{citation["document_name"]}** - Page {citation["page_number"]}<br>'
-                        f'<small>{citation["relevant_text"][:150]}...</small>'
-                        f'</div>',
+                        f'{conf_icon} **Confidence:** <span class="{conf_class}">{confidence:.0%}</span> | '
+                        f'**Grounded:** {"✅" if is_grounded else "⚠️"}',
                         unsafe_allow_html=True
                     )
+                    
+                    # Citations
+                    if citations:
+                        st.markdown("**📎 Citations:**")
+                        for citation in citations:
+                            doc_name = citation.get("document_name", "Unknown")
+                            page_num = citation.get("page_number", "N/A")
+                            relevant_text = citation.get("relevant_text", "")[:200]
+                            st.info(f"📄 **{doc_name}** - Page {page_num}\n\n_{relevant_text}..._")
+                    
+                    # Debug info is hidden by default now as controls are removed
+                
+                # Save to history
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer,
+                    "citations": citations,
+                    "routing_info": routing_info
+                })
+
+    # Footer
+    st.markdown("---")
+
+elif page == "Evaluation Results":
+    st.title("📊 Evaluation Results")
+    st.caption("Performance metrics on company-provided question sets")
+    
+    # Find evaluation reports
+    report_dir = "data/company_results"
+    
+    if os.path.exists(report_dir):
+        # Look for markdown reports
+        report_files = glob.glob(os.path.join(report_dir, "report_*.md"))
         
-        # Show routing info in debug mode
-        if message["role"] == "assistant" and "routing_info" in message and message["routing_info"]:
-            with st.expander("🔍 Debug: Routing Info"):
-                st.json(message["routing_info"])
-
-
-# Chat input
-if prompt := st.chat_input("Ask a question about aviation..."):
-    # Check API
-    if not is_healthy:
-        st.error("API is not connected. Please start the server first.")
+        if report_files:
+            # Sort by modification time (newest first)
+            report_files.sort(key=os.path.getmtime, reverse=True)
+            latest_report = report_files[0]
+            
+            st.success(f"Displaying latest report: `{os.path.basename(latest_report)}`")
+            
+            with open(latest_report, "r", encoding="utf-8") as f:
+                report_content = f.read()
+            
+            st.markdown(report_content)
+            
+            # Additional Option: visual exploration of the raw JSON used for this report?
+            # We can find the matching JSON file
+            json_file = latest_report.replace("report_", "evaluation_results_").replace(".md", ".json")
+            if os.path.exists(json_file):
+                 with st.expander("📂 View Raw Results Data"):
+                    with open(json_file, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    st.json(data)
+        else:
+            st.warning("No evaluation reports found.")
     else:
-        # Add user message
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        
-        # Get response
-        with st.chat_message("assistant"):
-            with st.spinner("Searching aviation documents..."):
-                response = ask_question(prompt, debug=debug_mode, top_k=top_k)
-            
-            if "error" in response:
-                st.error(f"Error: {response['error']}")
-                answer = "I encountered an error processing your question."
-                citations = []
-                routing_info = None
-            else:
-                answer = response.get("answer", "No answer received.")
-                citations = response.get("citations", [])
-                confidence = response.get("confidence", 0)
-                is_grounded = response.get("is_grounded", False)
-                routing_info = response.get("routing_info", None)
-                
-                # Display answer
-                st.markdown(answer)
-                
-                # Confidence indicator
-                if confidence >= 0.8:
-                    conf_class = "confidence-high"
-                    conf_icon = "🟢"
-                elif confidence >= 0.5:
-                    conf_class = "confidence-medium"
-                    conf_icon = "🟡"
-                else:
-                    conf_class = "confidence-low"
-                    conf_icon = "🔴"
-                
-                st.markdown(
-                    f'{conf_icon} **Confidence:** <span class="{conf_class}">{confidence:.0%}</span> | '
-                    f'**Grounded:** {"✅" if is_grounded else "⚠️"}',
-                    unsafe_allow_html=True
-                )
-                
-                # Citations
-                if citations:
-                    st.markdown("**📎 Citations:**")
-                    for citation in citations:
-                        st.markdown(
-                            f'<div class="citation-box">'
-                            f'📄 **{citation["document_name"]}** - Page {citation["page_number"]}<br>'
-                            f'<small>{citation.get("relevant_text", "")[:150]}...</small>'
-                            f'</div>',
-                            unsafe_allow_html=True
-                        )
-                
-                # Debug: Retrieved chunks
-                if debug_mode and response.get("retrieved_chunks"):
-                    with st.expander(f"🔍 Debug: Retrieved Chunks ({len(response['retrieved_chunks'])})"):
-                        for i, chunk in enumerate(response["retrieved_chunks"], 1):
-                            st.markdown(f"**Chunk {i}** (Score: {chunk['score']:.3f})")
-                            st.text(f"Source: {chunk['source_file']}, Page {chunk['page_number']}")
-                            st.text(chunk["content"][:300] + "...")
-                            st.markdown("---")
-                
-                # Debug: Routing info
-                if debug_mode and routing_info:
-                    with st.expander("🔍 Debug: Query Routing"):
-                        st.json(routing_info)
-            
-            # Save to history
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": answer,
-                "citations": citations,
-                "routing_info": routing_info if debug_mode else None
-            })
-
-
-# Footer
-st.markdown("---")
-st.caption(
-    "⚠️ **Disclaimer**: This system answers ONLY from provided aviation documents. "
-    "If information is not available, it will explicitly refuse. "
-    "Always verify critical information with official sources."
-)
+        st.warning(f"Directory not found: {report_dir}")
+        st.info("Run the evaluation script first to generate results.")

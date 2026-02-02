@@ -1,0 +1,274 @@
+—QUESTIONS (1-50)—
+1. Flight levels are referenced to:
+A. Mean Sea Level
+B. Aerodrome elevation
+C. Standard pressure datum
+D. Local QNH
+2. If both pitot and static sources are blocked, the ASI will:
+A. Under-read
+B. Over-read
+C. Act as an altimeter
+D. Freeze at last indication
+3. An aircraft shall be registered in:
+A. Every State it operates into
+B. More than one State simultaneously
+C. Only one State at a time
+D. The State of manufacture only
+4. Which document confirms that an aircraft complies with approved design and
+maintenance standards?
+A. Certificate of Registration
+B. Air Operator Certificate
+C. Certificate of Airworthiness
+D. Noise Certificate
+
+5. When two aircraft are converging at approximately the same altitude, the aircraft which
+has the other on its:
+A. Left shall give way
+B. Right shall give way
+C. Tail shall give way
+D. Higher altitude shall give way
+6. Which airspace class permits both IFR and VFR flights with ATC separation provided
+only to IFR?
+A. Class A
+B. Class B
+C. Class C
+D. Class E
+7. The primary objective of Air Traffic Services is to:
+A. Maximise airport capacity
+B. Prevent collisions between aircraft
+C. Control airline schedules
+D. Enforce customs regulations
+8. The primary reason temperature normally decreases with height in the troposphere is
+due to:
+A. Decrease in solar radiation absorption
+B. Expansion and cooling of rising air
+C. Reduced ozone concentration
+D. Increase in terrestrial radiation
+
+9. Dew point is best defined as the:
+A. Temperature at which clouds form
+B. Temperature to which air must be cooled to become saturated
+C. Measure of moisture content
+D. Lowest night temperature
+10. An air parcel lifted dry adiabatically will cool at approximately:
+A. 6.5°C per km
+B. 3°C per 1000 ft
+C. 10°C per km
+D. 5°C per km
+11. Who painted the famous artwork Mona Lisa?
+A. Vincent van Gogh
+B. Pablo Picasso
+C. Michelangelo
+D. Leonardo da Vinci
+12. The Point of No Return (PNR) is most sensitive to changes in:
+A. Aircraft weight
+B. Wind component
+C. Fuel density
+D. Altitude
+13. A missed approach shall be initiated when:
+A. Runway is not visible at 1,000 ft
+
+B. Required visual reference is not established at DA/MDA
+C. ATC clearance is delayed
+D. Crosswind exceeds aircraft limitation
+14. The scale of a Mercator chart increases with:
+A. Decreasing latitude
+B. Increasing latitude
+C. Longitude only
+D. Distance from prime meridian
+15. A Commercial Pilot Licence holder may:
+A. Act as PIC of scheduled airline operations
+B. Fly for hire or reward within licence privileges
+C. Exercise ATPL privileges without experience
+D. Conduct military operations
+16. The maximum difference between apparent noon and mean noon occurs approximately
+during:
+A. June and December
+B. March and September
+C. April and October
+D. January and July
+17. A sea breeze occurs primarily due to:
+A. Pressure decrease over land at night
+B. Faster cooling of land than sea
+C. Differential heating between land and sea
+
+D. Coriolis force reversal
+18. The minimum number of satellites required by GNSS to determine a 3-D position and
+time error correction is:
+A. 3
+B. 4
+C. 5
+D. 6
+19. Which cloud type is most likely to produce continuous precipitation?
+A. Cumulus
+B. Cumulonimbus
+C. Nimbostratus
+D. Stratocumulus
+20. Which is the largest planet in our solar system?
+A. Earth
+B. Saturn
+C. Jupiter
+D. Neptune
+21. The primary reason for the difference between geodetic latitude and geocentric latitude
+is due to:
+A. Earth’s rotation
+B. Earth’s elliptical orbit
+C. Earth being an oblate spheroid
+
+D. Variation of gravity with height
+22. Which visibility restriction is caused by hygroscopic particles?
+A. Fog
+B. Smoke
+C. Haze
+D. Drizzle
+23. What is the capital city of Australia?
+A. Sydney
+B. Melbourne
+C. Perth
+D. Canberra
+24. The primary advantage of Secondary Surveillance Radar (SSR) over Primary Radar is:
+A. Detection without transponder
+B. Reduced clutter
+C. Individual aircraft identification
+D. Weather penetration
+25. The Point of No Return (PNR) is most sensitive to changes in:
+A. Aircraft weight
+B. Wind component
+C. Fuel density
+D. Altitude
+26. The primary objective of the Chicago Convention is to:
+
+A. Regulate airline tariffs worldwide
+B. Promote safe, orderly, and economical development of international civil aviation
+C. Control military aviation activities
+D. Allocate airspace sovereignty to ICAO
+27. Relative humidity will increase when:
+A. Temperature increases with constant moisture
+B. Temperature decreases with constant moisture
+C. Pressure decreases
+D. Wind speed increases
+28. Who was the first human to walk on the Moon?
+A. Buzz Aldrin
+B. Yuri Gagarin
+C. Michael Collins
+D. Neil Armstrong
+29. Which document contains permanent and temporary changes of long duration to
+aeronautical information?
+A. NOTAM
+B. AIP
+C. AIC
+D. SNOWTAM
+30. If an aircraft flies at a constant Mach number while descending through an inversion
+layer, the CAS will:
+A. Increase
+
+B. Decrease
+C. Remain constant
+D. Become zero
+31. The range of a VHF navigation aid is primarily limited by:
+A. Transmitter power
+B. Atmospheric refraction
+C. Line-of-sight distance
+D. Antenna polarization
+32. The most hazardous icing for aircraft performance is:
+A. Rime ice
+B. Clear ice
+C. Hoar frost
+D. Ice crystals
+33. Which process transfers heat vertically in the atmosphere?
+A. Conduction
+B. Radiation
+C. Convection
+D. Advection
+34. The colour of runway threshold lights is:
+A. Red
+B. Green
+C. White
+
+D. Amber
+35. The Dry Adiabatic Lapse Rate (approx.) is:
+A. 6.5°C per km
+B. 3°C per 1000 ft
+C. 10°C per km
+D. 5°C per km
+36. Reduced Vertical Separation Minimum (RVSM) vertical separation between FL290 and
+FL410 is:
+A. 2,000 ft
+B. 1,000 ft
+C. 500 ft
+D. 300 ft
+37. The primary advantage of Secondary Surveillance Radar (SSR) over Primary Radar is:
+A. Detection without transponder
+B. Reduced clutter
+C. Individual aircraft identification
+D. Weather penetration
+38. Which document confirms that an aircraft complies with approved design and
+maintenance standards?
+A. Certificate of Registration
+B. Air Operator Certificate
+C. Certificate of Airworthiness
+D. Noise Certificate
+
+39. The ISA assumes a temperature lapse rate of:
+A. 6.5°C per 100 m
+B. 6.5°C per 1000 ft
+C. 6.5°C per km
+D. 5°C per km
+40. Who was the first human to walk on the Moon?
+A. Buzz Aldrin
+B. Yuri Gagarin
+C. Michael Collins
+D. Neil Armstrong
+41. Clear Air Turbulence (CAT) is most commonly associated with:
+A. Thunderstorms
+B. Jet streams
+C. Sea breeze fronts
+D. Radiation inversion
+42. In an ICAO flight plan, the planned cruising speed is expressed as:
+A. Indicated airspeed
+B. Ground speed
+C. Expected true airspeed
+D. Mach number only
+43. Relative humidity is affected by temperature: Relative humidity will increase when:
+A. Temperature increases with constant moisture
+
+B. Temperature decreases with constant moisture
+C. Pressure decreases
+D. Wind speed increases
+44. The primary purpose of aircraft accident investigation is to:
+A. Assign blame and liability
+B. Determine insurance compensation
+C. Prevent future accidents
+D. Penalise flight crew
+45. Wind shear is most hazardous during:
+A. Cruise flight
+B. High-altitude en-route phase
+C. Take-off and landing
+D. Holding patterns
+46. A warm front is typically characterized by:
+A. Steep slope and showery rain
+B. Narrow cloud band and turbulence
+C. Gentle slope and widespread stratiform cloud
+D. Severe thunderstorms along front
+47. Thunderstorms require all EXCEPT:
+A. Moisture
+B. Instability
+C. Lifting mechanism
+
+D. Temperature inversion at surface
+48. Which pressure system is generally associated with subsidence and fair weather?
+A. Trough
+B. Cyclone
+C. Low pressure
+D. Anticyclone
+49. If an aircraft flies at a constant Mach number while descending through an inversion
+layer, the CAS will:
+A. Increase
+B. Decrease
+C. Remain constant
+D. Become zero
+50. The primary objective of Air Traffic Services is to:
+A. Maximise airport capacity
+B. Prevent collisions between aircraft
+C. Control airline schedules
+D. Enforce customs regulations
