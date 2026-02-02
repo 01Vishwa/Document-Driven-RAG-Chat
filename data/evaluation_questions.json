@@ -1,0 +1,423 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "50 Aviation RAG Evaluation Questions",
+    "categories": {
+      "factual": "Simple definitions and direct lookups (20 questions)",
+      "applied": "Scenario-based, operational or procedural (20 questions)",
+      "reasoning": "Multi-step reasoning, trade-offs, conditional logic (10 questions)"
+    },
+    "created_at": "2026-02-01",
+    "source_documents": [
+      "10-General-Navigation-2014.pdf",
+      "11-radio-navigation-2014.pdf",
+      "6-mass-and-balance-and-performance-2014.pdf",
+      "7-Flight-Planning-and-Monitoring-2014.pdf",
+      "Air-Regulation-RK-BALI.pdf",
+      "Instruments.pdf",
+      "Meteorology full book.pdf"
+    ]
+  },
+  "questions": [
+    {
+      "question_id": "F001",
+      "question": "What is the definition of an altimeter in aviation?",
+      "question_type": "factual",
+      "expected_answer": "An altimeter is an instrument that measures the altitude of an aircraft above a reference level by sensing atmospheric pressure.",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F002",
+      "question": "What is the standard atmospheric pressure at sea level in hectopascals (hPa)?",
+      "question_type": "factual",
+      "expected_answer": "1013.25 hPa or 29.92 inches of mercury",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F003",
+      "question": "Define the term 'VOR' in aviation navigation.",
+      "question_type": "factual",
+      "expected_answer": "VOR stands for VHF Omnidirectional Range, which is a type of radio navigation system for aircraft providing bearing information.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F004",
+      "question": "What is the definition of 'density altitude'?",
+      "question_type": "factual",
+      "expected_answer": "Density altitude is the pressure altitude corrected for non-standard temperature, representing the altitude in the standard atmosphere at which the air density would equal the actual air density at the place of observation.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F005",
+      "question": "What is the meaning of 'ILS' in aviation?",
+      "question_type": "factual",
+      "expected_answer": "ILS stands for Instrument Landing System, a precision approach system that provides both lateral (localizer) and vertical (glide slope) guidance to aircraft during approach and landing.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F006",
+      "question": "What is the definition of 'true airspeed' (TAS)?",
+      "question_type": "factual",
+      "expected_answer": "True airspeed is the actual speed of an aircraft through the air, corrected for altitude and temperature effects on indicated airspeed.",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F007",
+      "question": "What is a cumulonimbus cloud?",
+      "question_type": "factual",
+      "expected_answer": "A cumulonimbus cloud is a dense, towering vertical cloud associated with thunderstorms, turbulence, hail, and heavy precipitation.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F008",
+      "question": "What does DME stand for and what does it measure?",
+      "question_type": "factual",
+      "expected_answer": "DME stands for Distance Measuring Equipment. It measures the slant range distance between an aircraft and a ground station.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F009",
+      "question": "What is the definition of 'magnetic variation' or 'declination'?",
+      "question_type": "factual",
+      "expected_answer": "Magnetic variation (or declination) is the angular difference between true north and magnetic north at any given location on Earth's surface.",
+      "source_document": "10-General-Navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F010",
+      "question": "What is the purpose of the vertical speed indicator (VSI)?",
+      "question_type": "factual",
+      "expected_answer": "The vertical speed indicator shows the rate of climb or descent of an aircraft in feet per minute (fpm).",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F011",
+      "question": "Define 'maximum takeoff weight' (MTOW).",
+      "question_type": "factual",
+      "expected_answer": "Maximum takeoff weight is the maximum weight at which the pilot is allowed to attempt to take off, due to structural or other limits.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F012",
+      "question": "What is a METAR report?",
+      "question_type": "factual",
+      "expected_answer": "METAR is a format for reporting weather information, primarily used by pilots for flight planning. It stands for Meteorological Aerodrome Report.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F013",
+      "question": "What is the definition of 'center of gravity' (CG) in aircraft?",
+      "question_type": "factual",
+      "expected_answer": "The center of gravity is the point at which an aircraft would balance if suspended, representing the mean location of all mass in the aircraft.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F014",
+      "question": "What is the International Standard Atmosphere (ISA) temperature at sea level?",
+      "question_type": "factual",
+      "expected_answer": "The ISA standard temperature at sea level is 15°C (59°F).",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F015",
+      "question": "What is the function of an aircraft's attitude indicator?",
+      "question_type": "factual",
+      "expected_answer": "The attitude indicator (artificial horizon) shows the aircraft's attitude relative to the horizon, displaying pitch and bank angles.",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F016",
+      "question": "What does NDB stand for in aviation navigation?",
+      "question_type": "factual",
+      "expected_answer": "NDB stands for Non-Directional Beacon, a radio transmitter at a known location used as an aviation navigation aid.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F017",
+      "question": "What is the definition of 'wind shear'?",
+      "question_type": "factual",
+      "expected_answer": "Wind shear is a sudden change in wind speed and/or direction over a short distance, which can occur vertically or horizontally.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F018",
+      "question": "What is the purpose of a transponder in aircraft?",
+      "question_type": "factual",
+      "expected_answer": "A transponder is an electronic device that receives radar signals and automatically transmits a coded response, providing aircraft identification and altitude information to air traffic control.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F019",
+      "question": "What is the definition of 'decision height' (DH)?",
+      "question_type": "factual",
+      "expected_answer": "Decision height is a specified height during a precision approach at which a missed approach must be initiated if the required visual reference for landing has not been established.",
+      "source_document": "Air-Regulation-RK-BALI.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "F020",
+      "question": "What is the lapse rate in the International Standard Atmosphere (ISA)?",
+      "question_type": "factual",
+      "expected_answer": "The ISA temperature lapse rate is approximately 1.98°C (or about 2°C) per 1000 feet up to the tropopause (approximately 36,000 feet).",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A001",
+      "question": "An aircraft is cruising at FL350 and the outside air temperature is -50°C. Is this warmer or colder than ISA at that altitude?",
+      "question_type": "applied",
+      "expected_answer": "At FL350 (35,000 ft), ISA temperature would be approximately 15 - (2 × 35) = -55°C. The actual temperature of -50°C is therefore warmer than ISA (ISA +5).",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A002",
+      "question": "If the QNH is 1023 hPa and the standard pressure is 1013.25 hPa, how would this affect the altimeter reading compared to true altitude?",
+      "question_type": "applied",
+      "expected_answer": "With QNH higher than standard (1023 vs 1013.25), the actual altitude would be approximately 300 feet higher than indicated. Flying from high to low pressure without adjustment means 'high to low, look out below.'",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A003",
+      "question": "A pilot needs to calculate the takeoff distance. The elevation is 2000 ft, temperature is 30°C. How does this affect takeoff performance compared to sea level ISA conditions?",
+      "question_type": "applied",
+      "expected_answer": "Higher elevation and higher temperature both increase density altitude, which reduces engine performance and lift. This results in longer takeoff distances and reduced climb performance compared to sea level ISA conditions.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A004",
+      "question": "During an ILS approach, the localizer needle is deflected to the right and the glide slope needle is above center. What corrections should the pilot make?",
+      "question_type": "applied",
+      "expected_answer": "The pilot should turn right to intercept the localizer centerline (fly toward the needle) and increase descent rate or reduce pitch to get back on the glide slope (fly toward the needle).",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A005",
+      "question": "An aircraft has a center of gravity that is at the forward limit. How will this affect flight characteristics?",
+      "question_type": "applied",
+      "expected_answer": "Forward CG increases stability but requires more tail-down force, resulting in higher fuel consumption, higher stall speeds, and more elevator authority needed for rotation and flare during landing.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A006",
+      "question": "A pilot receives a SIGMET warning of embedded cumulonimbus clouds along the planned route. What actions should be taken?",
+      "question_type": "applied",
+      "expected_answer": "The pilot should consider deviating around the area, requesting a different altitude, or delaying departure. Embedded CB indicates thunderstorms hidden in other clouds, making visual avoidance impossible. Never attempt to fly through cumulonimbus clouds.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A007",
+      "question": "If a VOR station is located to the north of the aircraft and the OBS is set to 360°, what would the CDI indicate if the aircraft is directly east of the station?",
+      "question_type": "applied",
+      "expected_answer": "The CDI would show a full-scale deflection to the left, indicating the selected radial (360° TO) is to the west of the aircraft's current position.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A008",
+      "question": "An aircraft is flying with a headwind of 30 knots. The TAS is 150 knots. What is the groundspeed?",
+      "question_type": "applied",
+      "expected_answer": "Groundspeed = TAS - Headwind = 150 - 30 = 120 knots. Headwind reduces groundspeed while tailwind increases it.",
+      "source_document": "10-General-Navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A009",
+      "question": "During pre-flight, the pilot notices the aircraft's weight is close to MTOW but the CG calculation shows it's within limits. Should the pilot be concerned about any specific performance factors?",
+      "question_type": "applied",
+      "expected_answer": "Yes, at high weight the pilot should be concerned about: longer takeoff distance required, reduced climb rate, higher approach and landing speeds, longer landing distance, and potential structural stress. Performance charts should be consulted for the specific weight.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A010",
+      "question": "A pilot notices icing on the airframe during flight. What are the immediate actions and why?",
+      "question_type": "applied",
+      "expected_answer": "Activate anti-ice/de-ice systems immediately, request altitude change to warmer air or exit icing conditions, reduce angle of attack (increase speed) if safe, and consider diverting. Ice disrupts airflow, increases weight, reduces lift, and can block pitot tubes and static ports.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A011",
+      "question": "The magnetic variation at a location is 5°W. If the true course is 090°, what magnetic course should be flown?",
+      "question_type": "applied",
+      "expected_answer": "Magnetic Course = True Course + West Variation = 090° + 5° = 095°. Remember: 'East is least, West is best' or 'Variation West, Magnetic Best (add); Variation East, Magnetic Least (subtract).'",
+      "source_document": "10-General-Navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A012",
+      "question": "An aircraft experiences a rapid change in wind direction and speed on final approach. What hazard does this indicate and what should the pilot do?",
+      "question_type": "applied",
+      "expected_answer": "This indicates wind shear, which can cause sudden loss of airspeed and altitude. The pilot should be prepared to go around, maintain higher than normal approach speed, and report the wind shear to ATC.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A013",
+      "question": "A pilot is flying from a warm air mass into a cold air mass without adjusting the altimeter. What will happen to the indicated altitude versus true altitude?",
+      "question_type": "applied",
+      "expected_answer": "The indicated altitude will be higher than the true altitude. Cold air is denser, so the pressure levels are compressed closer to the ground. The altimeter will read higher than actual altitude, creating a dangerous situation ('from hot to cold, look out below').",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A014",
+      "question": "During cruise flight, the DME shows 50 NM from a VOR station. If the aircraft descends 5000 feet while maintaining the same ground track, will the DME reading change significantly?",
+      "question_type": "applied",
+      "expected_answer": "At 50 NM distance, the slant range error is minimal. The DME measures slant range (direct distance), but at large distances compared to altitude, the difference between slant range and ground distance is negligible.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A015",
+      "question": "A pilot is planning a flight and the forecast shows a trough line along the route. What weather should be expected?",
+      "question_type": "applied",
+      "expected_answer": "A trough line typically indicates: convergence of air, rising air motion, increased cloudiness, possible precipitation, gusty winds, and potential turbulence. The pilot should expect deteriorating weather conditions near the trough.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A016",
+      "question": "If fuel consumption increases during flight due to headwinds, how should the pilot recalculate the fuel requirements?",
+      "question_type": "applied",
+      "expected_answer": "The pilot should calculate the new groundspeed considering the headwind, determine the new flight time for remaining distance, multiply by fuel burn rate to get fuel required, and ensure adequate reserves remain. If not, diversion to a closer alternate should be considered.",
+      "source_document": "7-Flight-Planning-and-Monitoring-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A017",
+      "question": "An aircraft's attitude indicator shows 15° of bank but the pilot feels no sensation of turning. Which instrument should be trusted?",
+      "question_type": "applied",
+      "expected_answer": "Trust the instruments, specifically the attitude indicator. Spatial disorientation can cause false sensory inputs. Cross-check with other instruments (heading indicator, turn coordinator) to verify the attitude indicator is functioning correctly.",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A018",
+      "question": "During flight planning, the departure airport elevation is 5000 ft and the temperature is 35°C. Using the rule of thumb, what is the approximate density altitude?",
+      "question_type": "applied",
+      "expected_answer": "ISA temp at 5000 ft is approximately 15 - (5 × 2) = 5°C. Actual temp is 35°C, so deviation is +30°C. Rule of thumb: add ~120 ft per °C above ISA. Density altitude ≈ 5000 + (30 × 120) = 8600 ft approximately.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A019",
+      "question": "A pilot notices the VSI showing a 500 fpm climb but the altimeter shows constant altitude. What could be the problem?",
+      "question_type": "applied",
+      "expected_answer": "This indicates a possible static system blockage or leak. The VSI relies on rate of pressure change, while the altimeter reads absolute pressure. Check for blocked static ports, use alternate static source if available, and cross-check with GPS altitude.",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "A020",
+      "question": "When planning a flight, the pilot notices the route crosses from magnetic variation 3°E to 8°W. How should course corrections be handled?",
+      "question_type": "applied",
+      "expected_answer": "The pilot should use the mean variation for the entire route or divide the route into segments with appropriate variation for each. For accuracy, apply the local variation at each waypoint when converting between true and magnetic courses.",
+      "source_document": "10-General-Navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R001",
+      "question": "An aircraft is operating at maximum landing weight but needs to land earlier than planned due to weather. The fuel remaining exceeds what was planned at this point. Should the pilot be concerned, and what factors must be evaluated?",
+      "question_type": "reasoning",
+      "expected_answer": "Yes, the pilot should be concerned. The aircraft may be above maximum landing weight due to unexpended fuel. The pilot must consider: current weight vs MLW, structural limits if overweight landing occurs, runway length requirements at higher weight, brake and tire limitations, fuel jettison capability if available, and whether continuing to burn fuel before landing is feasible. Safety considerations must be balanced against the urgency of the weather situation.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R002",
+      "question": "A pilot must choose between two approaches: an ILS approach through a layer of clouds with moderate icing conditions, or a visual approach requiring flight around a mountainous area with limited fuel remaining. What factors should influence this decision?",
+      "question_type": "reasoning",
+      "expected_answer": "The decision requires weighing multiple factors: (1) Aircraft ice protection capabilities and certification for known icing, (2) Duration of exposure in icing conditions, (3) Fuel remaining vs distance for the visual route, (4) Terrain clearance and visibility for the visual approach, (5) Current weather trends, (6) Crew experience and fatigue, (7) Alternate airport availability. If ice protection is adequate and exposure time is short, ILS may be safer than extending flight with limited fuel.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R003",
+      "question": "During preflight, a pilot discovers the aircraft CG is calculated to be exactly at the aft limit for takeoff. Fuel burn during flight will shift CG further aft. Is it safe to proceed with the flight?",
+      "question_type": "reasoning",
+      "expected_answer": "This is potentially unsafe. As fuel burns, CG typically moves based on fuel tank location. If CG is at the aft limit at takeoff and moves further aft during flight, the aircraft could exceed aft CG limits mid-flight, potentially causing: reduced stability, difficulty controlling pitch, risk of uncontrollable pitch-up, and difficulty recovering from unusual attitudes. The pilot should recalculate with actual weights, consider load redistribution, or reduce fuel/payload to ensure CG remains within limits throughout the flight envelope.",
+      "source_document": "6-mass-and-balance-and-performance-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R004",
+      "question": "A pilot experiences a simultaneous failure of the attitude indicator and heading indicator. Using only the remaining instruments, how can the pilot maintain controlled flight?",
+      "question_type": "reasoning",
+      "expected_answer": "The pilot should use partial panel techniques: (1) Turn coordinator for bank angle control, (2) Airspeed indicator for pitch reference (constant airspeed = constant pitch), (3) Altimeter and VSI for pitch trends, (4) Magnetic compass for heading (accounting for errors in turns). For turns: use timed turns with turn coordinator (standard rate = 3°/sec). Maintain wings level by keeping turn coordinator centered, adjust pitch using airspeed and VSI. Request vectors from ATC if possible. This requires disciplined instrument cross-check.",
+      "source_document": "Instruments.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R005",
+      "question": "An aircraft is experiencing severe clear air turbulence at FL390. The pilot has options to climb to FL410, descend to FL350, or deviate 50 miles around the reported turbulence area. Given limited fuel and the aircraft is heavy, which option should be considered and why?",
+      "question_type": "reasoning",
+      "expected_answer": "Analysis: (1) Climbing to FL410: Heavy weight may limit climb capability, and turbulence often exists at multiple levels; requires fuel and performance consideration. (2) Descending to FL350: Usually more practical when heavy, increases fuel burn but exits most CAT which typically occurs near the tropopause/jet stream. (3) Deviating 50nm: Adds fuel burn and time, may or may not avoid turbulence if widespread. Recommendation: Descend to FL350 is typically most practical for a heavy aircraft with limited fuel. Climbing requires performance margins that may not exist, and lateral deviation doesn't guarantee avoiding CAT while consuming fuel. Always cross-check with pilot reports and ATC.",
+      "source_document": "Meteorology full book.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R006",
+      "question": "A pilot is tracking a VOR radial and notices the CDI gradually drifting despite maintaining the same heading. The DME shows decreasing distance. What is happening and what corrections are needed?",
+      "question_type": "reasoning",
+      "expected_answer": "The gradual CDI drift with constant heading indicates a crosswind component. As DME decreases (getting closer to station), the same angular error represents less linear deviation, but the wind drift accumulates. The pilot should: (1) Note the direction of drift (which way CDI is moving), (2) Turn into the wind (toward the needle) to re-intercept, (3) Apply a wind correction angle by maintaining a heading slightly into the wind, (4) The correction angle needed may change as you get closer to the station (VOR sensitivity increases near the station). Continuously monitor and adjust the heading to maintain course.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R007",
+      "question": "During cruise, the pilot notices fuel consumption is higher than planned. The aircraft can either: (A) continue to destination with minimum reserves, (B) divert to a closer alternate with comfortable reserves, or (C) request a lower altitude with better fuel efficiency but longer flight time. How should this decision be approached?",
+      "question_type": "reasoning",
+      "expected_answer": "Decision framework: (1) Calculate actual fuel remaining and compare with legal requirements (never continue below legal minimums). (2) Option A risks safety margins - generally unacceptable unless weather and conditions are ideal and the shortage is minor. (3) Option B ensures safety but incurs operational cost and delay. (4) Option C may work if: lower altitude actually improves economy (check performance data - not always true), the added time doesn't negate the efficiency gain, weather at lower altitude is acceptable. Best practice: If there's any doubt, divert (Option B). Never compromise safety margins. Also consider: rechecking fuel quantity, leaning mixture, reducing speed for better range, and communicating with dispatch/ATC.",
+      "source_document": "7-Flight-Planning-and-Monitoring-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R008",
+      "question": "A pilot planning a flight notices that the destination weather is forecast to be at minimums at the ETA, but the trend shows improvement. The departure weather is good. Should the flight be dispatched, and what contingencies should be in place?",
+      "question_type": "reasoning",
+      "expected_answer": "The flight can be dispatched if: (1) Alternate airport requirements are met (suitable alternate with weather above minimums), (2) Sufficient fuel for destination + missed approach + alternate + reserves, (3) The improvement trend is from a reliable source. Contingencies: (1) File with an alternate airport, (2) Monitor weather updates continuously, (3) Establish a 'decision point' where commitment to destination vs alternate must be made, (4) Have a backup plan if trend reverses, (5) Consider departure delay if improvement is expected shortly. Key principle: Never plan to arrive at a destination that is below landing minimums - always have legal options available.",
+      "source_document": "7-Flight-Planning-and-Monitoring-2014.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R009",
+      "question": "An aircraft experiences a rapid decompression at FL400. After completing immediate memory items, the pilot must decide between: (A) emergency descent to 10,000 ft directly below, which passes through known severe turbulence, or (B) emergency descent with a deviation that avoids turbulence but takes 2 more minutes. Which should be chosen?",
+      "question_type": "reasoning",
+      "expected_answer": "This requires balancing hypoxia risk against structural risk. Key considerations: (1) Time of useful consciousness at FL400 is approximately 15-30 seconds without supplemental oxygen. (2) Once on emergency oxygen, crew has more time but passenger oxygen duration varies. (3) Severe turbulence at high speed could cause structural damage or injury. Recommendation: If emergency oxygen is functioning for crew and passengers, the 2-minute deviation to avoid severe turbulence is safer - structural failure is catastrophic while the oxygen systems provide a safety margin. However, if there's any doubt about oxygen supply, direct descent takes priority as hypoxia is immediately incapacitating. Reduce speed for turbulence penetration if passing through is unavoidable.",
+      "source_document": "Air-Regulation-RK-BALI.pdf",
+      "source_page": null
+    },
+    {
+      "question_id": "R010",
+      "question": "A pilot conducting an ILS approach notices at 1000 feet AGL that they are perfectly on the localizer but one dot above the glide slope. The weather is at minimums. Should they continue or go around?",
+      "question_type": "reasoning",
+      "expected_answer": "Analysis requires considering: (1) One dot high on glide slope at 1000 AGL is typically acceptable if stabilized approach criteria can still be met. (2) Being high means you have extra altitude margin for obstacles. (3) At minimums weather, visual acquisition at decision height is critical. (4) A stabilized approach typically requires being on glide slope by 500-1000 AGL. Recommendation: Continue the approach but immediately begin correction to recapture glide slope from above (reduce power, increase descent rate slightly). If not back on glide slope by 500 AGL with stable parameters (airspeed, configuration, sink rate), execute a missed approach. Being high is safer than being low, but a destabilized approach at minimums is dangerous.",
+      "source_document": "11-radio-navigation-2014.pdf",
+      "source_page": null
+    }
+  ]
+}

@@ -1,38 +1,54 @@
 version: '3.8'
 
 services:
-  # RAG API Service
-  api:
-    build: ./backend
+  aviation-rag:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aviation-rag-chat
+    ports:
+      - "8000:8000"  # FastAPI
+      - "8501:8501"  # Streamlit
+    volumes:
+      - ./Raw:/app/../Raw:ro  # Mount documents as read-only
+      - ./backend/data:/app/data  # Persist index and results
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - LLM_ENDPOINT=${LLM_ENDPOINT:-https://models.github.ai/inference}
+      - LLM_MODEL=${LLM_MODEL:-openai/gpt-4o}
+      - USE_GPU=false  # Set to true if running with nvidia-docker
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: GPU-enabled version
+  aviation-rag-gpu:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aviation-rag-chat-gpu
     ports:
       - "8000:8000"
-    environment:
-      - API_HOST=0.0.0.0
-      - API_PORT=8000
-      - DEBUG=true
-      # Pass through essential host/secrets
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
-      - SUPABASE_COLLECTION_NAME=${SUPABASE_COLLECTION_NAME}
+      - "8501:8501"
     volumes:
+      - ./Raw:/app/../Raw:ro
       - ./backend/data:/app/data
-      - ./backend/logs:/app/logs
-      - ./Raw:/app/Raw
-    restart: always
-
-  # Local Postgres for testing (Optional, if not using Supabase cloud)
-  # Uses pgvector image
-  db:
-    image: ankane/pgvector
-    ports:
-      - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=rag_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    restart: always
-
-volumes:
-  pgdata:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - LLM_ENDPOINT=${LLM_ENDPOINT:-https://models.github.ai/inference}
+      - LLM_MODEL=${LLM_MODEL:-openai/gpt-4o}
+      - USE_GPU=true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    profiles:
+      - gpu
+    restart: unless-stopped

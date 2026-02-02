@@ -1,226 +1,111 @@
-# Aviation Document AI Chat
+# ✈️ Aviation Document AI Chat
 
-A Retrieval-Augmented Generation (RAG) system for aviation documents with strict grounding and hallucination control.
+A production-grade Retrieval-Augmented Generation (RAG) system for aviation documents. It features strict grounding, hallucination control, and traceable citations, designed for high-stakes domains.
 
-**Level 2 Implementation**: Hybrid Retrieval (BM25 + Vector + Cross-Encoder Reranker)
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-## Features
+## 🎯 Overview
 
-- 📄 **PDF Ingestion**: Automatically process aviation PDFs with page-aware chunking
-- 🔍 **Hybrid Retrieval**: Combines BM25 keyword search with dense vector similarity
-- 🎯 **Cross-Encoder Reranking**: Improves retrieval precision using `ms-marco-MiniLM`
-- ✅ **Strict Grounding**: Answers only from provided documents
-- 🚫 **Hallucination Control**: Refuses to answer when context is insufficient
-- 📊 **Evaluation Suite**: 50+ questions with metrics (faithfulness, hit-rate)
-- 💬 **Premium Chat UI**: Modern Next.js frontend with citations and debug mode
+This system answers questions **strictly** from provided aviation documents.
+- **Strict Refusal**: If an answer isn't in the docs, it refuses to answer.
+- **Citations**: Every answer includes `[Document, Page]` citations.
+- **Level 1 & 2 Compliance**: Implements mandatory RAG features plus Hybrid Retrieval and Query Routing.
 
-## Tech Stack
+## ✨ Features
 
-| Component | Technology |
-|-----------|------------|
-| Backend | FastAPI, Python 3.10+ |
-| Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
-| Vector Store | FAISS |
-| Sparse Index | BM25 (rank-bm25) |
-| Reranker | cross-encoder/ms-marco-MiniLM-L-6-v2 |
-| LLM | GitHub Models API (GPT-4o/GPT-5) |
-| Frontend | Next.js 14, TypeScript, Tailwind CSS |
+### ✅ Level 1: Mandatory
+- **Ingestion Pipeline**: Page-aware chunking (512 chars) optimized for aviation manuals.
+- **Vector Search**: FAISS index for dense semantic retrieval.
+- **Hallucination Control**: Explicit verification against context before answering.
+- **Evaluation**: Built-in suite (`evaluate.py`) with 50+ test questions.
 
-## Quick Start
+### 🚀 Level 2: Advanced
+- **Hybrid Retrieval**: Combines **BM25** (keyword) + **Vector** (semantic) search.
+- **Reranking**: Uses Cross-Encoders (`ms-marco-MiniLM`) to refine results.
+- **Query Router**: Routes questions (Simple vs Complex) to optimize retrieval strategy.
+- **Confidence Thresholding**: Flags low-confidence answers with caveats or refusals.
 
-### 1. Clone & Setup
+## 🛠️ Architecture
 
-```bash
-git clone <repository-url>
-cd Document-Driven-RAG-Chat
+```mermaid
+graph LR
+    User[User Question] --> Router{Query Router}
+    Router -->|Simple| Fast[Fast Retrieval (Top-5)]
+    Router -->|Complex| Deep[Deep Retrieval (Top-15 + Rerank)]
+    Fast --> Hybrid[Hybrid Search (FAISS + BM25)]
+    Deep --> Hybrid
+    Hybrid --> Reranker[Cross-Encoder Reranker]
+    Reranker --> Context[Context Window]
+    Context --> LLM[GPT-4o (GitHub Models)]
+    LLM --> Verify{Grounding Check}
+    Verify -->|Pass| Answer[Final Answer + Citations]
+    Verify -->|Fail| Refuse[Refusal Message]
 ```
 
-### 2. Backend Setup
+## 🚀 Quick Start
 
+### 1. Setup
 ```bash
+# Clone repo
+git clone <repo_url>
+cd Document-Driven-RAG-Chat
+
+# Setup Backend
 cd backend
-
-# Create virtual environment
 python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
-
-# Install dependencies
+# Windows: venv\Scripts\activate | Linux: source venv/bin/activate
 pip install -r requirements.txt
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your GITHUB_TOKEN
+# Environment
+copy .env.example .env
+# Edit .env and add your GITHUB_TOKEN
 ```
 
-### 3. Ingest Documents
+### 2. Ingest Data
+Place PDF files in the `Raw/` directory.
+```bash
+python ingest.py --path "../Raw/Air Regulation.pdf" 
+# Or ingest all: python ingest.py
+```
 
-Place your aviation PDFs in the `Raw/` directory, then:
+### 3. Run System
+```bash
+# Run both Backend API and Frontend UI
+python run.py
+```
+App will be available at [`http://localhost:8501`](http://localhost:8501).
+
+## 📊 Evaluation
+
+Run the evaluation suite to verify system performance against the 50-question set.
 
 ```bash
-python ingest.py
-```
-
-### 4. Start Backend
-
-```bash
-python main.py
-# or
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 5. Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Visit `http://localhost:3000` to use the chat interface.
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | System health check |
-| `/ingest` | POST | Ingest PDF documents |
-| `/ask` | POST | Ask a question |
-
-### Example Request
-
-```bash
-curl -X POST http://localhost:8000/ask \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is a VOR?", "debug": true}'
-```
-
-### Response Format
-
-```json
-{
-  "answer": "A VOR (VHF Omnidirectional Range) is...",
-  "citations": [
-    {
-      "document_name": "radio-navigation-2014.pdf",
-      "page_number": 42,
-      "chunk_id": "abc123",
-      "relevance_score": 0.87,
-      "snippet": "VOR is a type of..."
-    }
-  ],
-  "is_grounded": true,
-  "confidence_score": 0.82,
-  "retrieved_chunks": [...],
-  "retrieval_method": "Hybrid (BM25 + Vector + Cross-Encoder Reranker)"
-}
-```
-
-## Evaluation
-
-Run the evaluation suite:
-
-```bash
-cd backend
 python evaluate.py
 ```
 
-This generates:
-- `evaluation_results.json` - Detailed results
-- `report.md` - Markdown report with metrics
+**Metrics Tracked:**
+- **Retrieval Hit Rate**: Accuracy of finding relevant chunks.
+- **Faithfulness**: Alignment between answer and context.
+- **Hallucination Rate**: Frequency of unsupported claims (Target: 0%).
 
-### Metrics
+## 🔧 API Reference
 
-| Metric | Description |
-|--------|-------------|
-| Retrieval Hit Rate | Did retrieved chunks contain the answer? |
-| Faithfulness Score | Is the answer grounded in context? |
-| Hallucination Rate | % of unsupported claims |
-| Grounding Rate | % of properly grounded answers |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/ask` | Ask a question. Returns answer + citations. |
+| `POST` | `/ingest` | Trigger document ingestion pipeline. |
+| `GET` | `/health` | Check status of LLM and Vector Store. |
+| `GET` | `/stats` | View index statistics (doc counts, chunks). |
 
-## Project Structure
+## ⚙️ Configuration
 
-```
-Document-Driven-RAG-Chat/
-├── backend/
-│   ├── app/
-│   │   ├── api/          # FastAPI routes
-│   │   ├── core/         # Config, logging
-│   │   ├── models/       # Pydantic schemas
-│   │   └── services/     # RAG logic
-│   ├── main.py           # Entry point
-│   ├── ingest.py         # Ingestion script
-│   ├── evaluate.py       # Evaluation script
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── app/          # Next.js pages
-│   │   └── components/   # React components
-│   └── package.json
-├── Raw/                   # PDF documents
-└── data/                  # Generated indices
-```
+Key settings in `.env`:
+- `USE_BM25=true`: Enable hybrid search.
+- `USE_RERANKER=true`: Enable cross-encoder reranking.
+- `CHUNK_SIZE=512`: Size of text chunks (characters).
+- `CHUNK_OVERLAP=128`: Overlap to preserve context.
 
-## Level 2: Hybrid Retrieval
-
-This implementation extends Level 1 with:
-
-1. **BM25 Keyword Search**: Captures exact term matches
-2. **Vector Similarity**: Captures semantic meaning
-3. **Ensemble Combination**: Reciprocal rank fusion
-4. **Cross-Encoder Reranking**: Final precision boost
-
-### Metrics Comparison
-
-| Retrieval Method | Hit Rate | Faithfulness |
-|------------------|----------|--------------|
-| Vector Only | ~70% | ~75% |
-| **Hybrid + Reranker** | **~85%** | **~88%** |
-
-## Environment Variables
-
-### Backend (.env)
-
-```env
-GITHUB_TOKEN=your_github_pat_here
-LLM_ENDPOINT=https://models.github.ai/inference
-LLM_MODEL=openai/gpt-4o
-EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
-RERANKER_MODEL=cross-encoder/ms-marco-MiniLM-L-6-v2
-CHUNK_SIZE=1000
-CHUNK_OVERLAP=200
-```
-
-### Frontend (.env.local)
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-## Hallucination Control
-
-The system strictly refuses to answer when:
-
-1. Retrieved chunks have low relevance scores
-2. Context doesn't support the answer
-3. Question is out of scope
-
-**Refusal Response:**
-> "This information is not available in the provided document(s)."
-
-## Demo Video Script
-
-1. Show API health check
-2. Ingest aviation PDFs
-3. Ask factual question (e.g., "What is a VOR?")
-4. Show citations and debug mode
-5. Ask out-of-scope question (expect refusal)
-6. Run evaluation and show metrics
-
-## License
-
-MIT License - Built for AIRMAN AI/ML Technical Assignment
+---
+**Disclaimer**: Use for educational purposes. Verify all aviation data with official sources.
