@@ -272,10 +272,20 @@ INSTRUCTIONS:
             confidence = grounding_result["confidence"]
             
             # If not grounded, refuse to answer
-            if not is_grounded and confidence < settings.confidence_threshold:
+            if not is_grounded:
                 return GenerationResult(
                     answer="This information is not available in the provided document(s).",
                     is_grounded=False,
+                    confidence=confidence,
+                    citations=[],
+                    raw_response=answer,
+                )
+            
+            # If grounded but low confidence, also refuse
+            if confidence < settings.confidence_threshold:
+                return GenerationResult(
+                    answer="This information is not available in the provided document(s).",
+                    is_grounded=True,  # Technically grounded but low confidence
                     confidence=confidence,
                     citations=[],
                     raw_response=answer,

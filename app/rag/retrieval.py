@@ -116,6 +116,7 @@ class VectorStore:
         self,
         chunks: List[TextChunk],
         batch_size: int = 100,
+        update_bm25: bool = True,
     ) -> int:
         """
         Add chunks to the vector store.
@@ -161,7 +162,12 @@ class VectorStore:
             self.metadata.append(meta)
         
         # Update BM25 index
-        self._update_bm25(texts)
+        if update_bm25:
+            self._update_bm25(texts)
+        else:
+            # Just add to corpus for later building
+            new_tokenized = [self._tokenize(text) for text in texts]
+            self.tokenized_corpus.extend(new_tokenized)
         
         logger.info(
             f"Vector store now contains {self.active_index.ntotal} vectors"
@@ -185,6 +191,14 @@ class VectorStore:
         # Rebuild BM25 index
         if self.tokenized_corpus:
             self.bm25 = BM25Okapi(self.tokenized_corpus)
+            
+    def rebuild_bm25(self):
+        """Rebuild BM25 index from full corpus."""
+        if self.tokenized_corpus:
+            logger.info(f"Rebuilding BM25 index with {len(self.tokenized_corpus)} documents")
+            self.bm25 = BM25Okapi(self.tokenized_corpus)
+        else:
+            logger.warning("No corpus to build BM25 index")
     
     def search_vector(
         self,

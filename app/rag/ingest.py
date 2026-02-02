@@ -194,8 +194,11 @@ class RAGEngine:
                 # Process PDF
                 processed_doc = self.process_document(str(pdf_path))
                 
-                # Add chunks to vector store
-                chunks_added = self.vector_store.add_chunks(processed_doc.chunks)
+                # Add chunks to vector store (defer BM25 update)
+                chunks_added = self.vector_store.add_chunks(
+                    processed_doc.chunks,
+                    update_bm25=False
+                )
                 total_chunks += chunks_added
                 processed_count += 1
                 
@@ -208,6 +211,11 @@ class RAGEngine:
                 error_msg = f"Failed to process {pdf_path}: {e}"
                 logger.error(error_msg)
                 errors.append(error_msg)
+        
+        # Rebuild BM25 index once at the end
+        if processed_count > 0:
+            logger.info("Finalizing BM25 index...")
+            self.vector_store.rebuild_bm25()
         
         # Save the vector store
         self.vector_store.save()

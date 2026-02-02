@@ -71,6 +71,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Security middleware
+from app.core.security import add_security_middleware
+add_security_middleware(app)
+
 
 # =============================================================================
 # API Endpoints
